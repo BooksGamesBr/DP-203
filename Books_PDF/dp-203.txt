@@ -3541,6 +3541,1025 @@ O Azure Synapse Link para Cosmos DB permite que essas organizações armazenem d
 Personalização de negócios em tempo real
 No varejo, muitos distribuidores baseados na web realizam análises de carrinho em tempo real para recomendar produtos a clientes que estão prestes a comprar outros. A análise da cesta em tempo real pode aumentar a receita das organizações, pois as sugestões direcionadas podem levar a outras compras de produtos normalmente adquiridos em conjunto.
 
+Manutenção preditiva por meio da detecção de anomalias com IoT
+As inovações em IoT industrial reduziram drasticamente o tempo de inatividade das máquinas e aumentaram a eficiência geral em todo o setor. Uma dessas inovações é a análise de manutenção preditiva para máquinas na borda da nuvem.
+
+A arquitetura a seguir aplica os recursos HTAP nativos da nuvem do Azure Synapse Link para Azure Cosmos DB para manutenção preditiva de IoT:
+
+Próxima Unidade: Explicar Cenários HTAP no Contexto do Link Synapse
+Explicar os cenários HTAP no contexto do Synapse Link
+Preenchidas
+100 EXP
+5 minutos
+O processamento analítico e transacional híbrido (HTAP) permite que as empresas executem análises em sistemas de banco de dados que fornecem recursos transacionais de alto desempenho sem afetar o desempenho desses sistemas. O HTAP permite que as organizações usem um banco de dados para atender às necessidades transacionais e analíticas e dar suporte à análise quase em tempo real de dados operacionais para tomar decisões oportunas.
+
+Por exemplo, a Adventure Works usa o Azure Cosmos DB para armazenar dados de pedido de venda e perfil de cliente de seu site de comércio eletrônico. O armazenamento de documentos NoSQL fornecido pelo Azure Cosmos DB fornece informações sobre como gerenciar seus dados usando a sintaxe SQL, permitindo que você leia e grave seus arquivos em uma escala global massiva.
+
+Embora a Adventure Works esteja satisfeita com os recursos e o desempenho do Azure Cosmos DB, eles estão preocupados com o custo de execução do alto volume de consultas analíticas complexas necessárias para atender aos requisitos de relatórios operacionais. Eles desejam acessar com eficiência todos os seus dados operacionais armazenados no Cosmos DB sem aumentar o desempenho do Azure Cosmos DB e o custo associado. Eles exploraram opções para extrair dados de seus contêineres para o data lake conforme ele muda, usando o mecanismo de feed de alterações do Azure Cosmos DB. O problema com essa abordagem são as dependências adicionais de serviço e código, bem como a manutenção de longo prazo da solução. Eles poderiam fazer exportações em massa de um oleoduto Synapse,
+
+Eles decidem habilitar o Azure Synapse Link para Cosmos DB e o repositório analítico em seus contêineres do Azure Cosmos DB. Com essa configuração, todos os dados transacionais são armazenados automaticamente em um columnstore totalmente isolado. Esse armazenamento permite análises em larga escala de dados operacionais no Azure Cosmos DB, sem afetar as cargas de trabalho transacionais. O Azure Synapse Link para Cosmos DB cria uma integração completa entre o Azure Cosmos DB e o Azure Synapse Analytics, permitindo que a Adventure Works execute análises quase em tempo real em seus dados operacionais sem ETL e com isolamento completo de desempenho de cargas de trabalho transacionais.
+
+Ao combinar a escala distribuída do processamento transacional e armazenamento analítico integrado do Cosmos DB com o poder de computação do Azure Synapse Analytics, o Azure Synapse Link permite uma arquitetura híbrida de processamento transacional e analítico (HTAP) para simplificar os processos de negócios corporativos. Essa integração elimina os processos de ETL, permitindo que analistas de negócios, engenheiros e cientistas de dados façam autoatendimento e executem pipelines de business intelligence, análise e aprendizado de máquina nesses dados operacionais quase em tempo real.
+
+Próxima Unidade: Descreva o Armazém Analítico
+
+Descreva o armazenamento analítico
+Preenchidas
+100 EXP
+7 minutos
+O Armazenamento Analítico do Azure Cosmos DB é um armazenamento de colunas totalmente isolado para permitir análises em larga escala em dados operacionais de sua instância do Azure Cosmos DB, sem afetar as cargas de trabalho transacionais.
+
+Armazenamento transacional orientado a linhas
+Os dados operacionais de um contêiner do Azure Cosmos DB são armazenados internamente em um "armazenamento transacional" baseado em linha indexado. O formato rowstore e seu índice de árvore B associado são projetados para permitir leituras e gravações transacionais rápidas com tempos de resposta de milissegundos de um dígito e consultas operacionais de alto desempenho. À medida que o conjunto de resultados cresce, consultas analíticas complexas podem se tornar caras, pois usam mais recursos de desempenho provisionados. O aumento do consumo da taxa de transferência provisionada, por sua vez, afeta a taxa de transferência das cargas de trabalho transacionais.
+
+Armazenamento analítico orientado a colunas
+O repositório analítico do Azure Cosmos DB aborda os desafios de complexidade e latência que acompanham os pipelines ETL tradicionais. O repositório analítico do Azure Cosmos DB pode sincronizar automaticamente os dados operacionais com um repositório de colunas separado. O formato columnstore é adequado para que consultas analíticas em larga escala sejam realizadas de maneira otimizada, o que aumenta a latência da consulta.
+
+Recursos do Armazém Analítico
+Ao criar um contêiner do Azure Cosmos DB, você tem a opção de habilitar o repositório analítico, no qual é criada uma nova estrutura de repositório de colunas que espelha os dados do repositório transacional. Esses dados de estrutura columnstore são armazenados separadamente do armazenamento transacional orientado a linhas com inserções, atualizações e exclusões realizadas no armazenamento transacional sendo copiadas de forma transparente por meio de um processo de sincronização automática interno totalmente gerenciado para o armazenamento.
+
+ Observação
+
+Você só pode habilitar o repositório analítico ao criar um novo contêiner.
+
+ Observação
+
+O Azure Synapse Link dá suporte à API Azure Cosmos DB SQL (Core) e à API Azure Cosmos DB para MongoDB.
+
+Normalmente, os dados são sincronizados automaticamente entre o armazenamento transacional e o armazenamento analítico em menos de 2 minutos, graças ao processo de sincronização automática. No entanto, em algumas circunstâncias, e particularmente em situações em que o banco de dados de desempenho compartilhado tem muitos contêineres, a latência da sincronização automática pode levar até 5 minutos.
+
+Devido ao fato de que o armazenamento transacional e analítico são mantidos e consultados separadamente, as cargas de trabalho associadas a esses armazenamentos são isoladas umas das outras; ou seja, as consultas feitas no repositório analítico (ou no processo de sincronização automática) não afetarão o desempenho ou os recursos (taxa de transferência ou unidades de solicitação) provisionados para o repositório transacional e as operações realizadas nele não afetarão a sincronização automática latência.
+
+ Observação
+
+As transações (leitura e gravação) e os custos de armazenamento do armazenamento analítico são cobrados separadamente do armazenamento e da taxa de transferência do armazenamento transacional.
+
+O processo de sincronização automática também lida com atualizações de esquema no armazenamento analítico de esquema automaticamente, à medida que novas propriedades exclusivas são adicionadas a elementos em seu contêiner ao longo do tempo. Isso permite que você aproveite os benefícios de desempenho que a estrutura de tópicos oferece sem nenhum esforço de sua parte. Veremos como o esquema de armazenamento analítico é gerenciado e exposto aos recursos de consulta do Synapse Analytics na próxima unidade.
+
+Você pode configurar a propriedade de tempo de vida padrão (TTL) para registros armazenados no repositório transacional e no repositório analítico independentemente um do outro. O valor TTL de um registro define quando ele será removido automaticamente da loja. Ao definir o valor de TTL padrão para ambos os armazenamentos, você pode gerenciar o ciclo de vida dos dados e definir por quanto tempo eles serão mantidos em cada armazenamento. Você pode substituir o valor TTL padrão (no nível do item) para o armazenamento transacional; no entanto, o valor TTL padrão sempre será aplicado aos dados na análise e não pode ser substituído no nível do item.
+
+O Azure Cosmos DB dá suporte a contas distribuídas globalmente que replicam de forma transparente seus contêineres nas regiões do Azure de sua escolha. Se ativado em um contêiner, o armazenamento analítico será configurado automaticamente em todas as regiões de distribuição global escolhidas; você não pode escolher seletivamente em quais regiões deseja implementar um armazenamento analítico. Também é recomendável escolher e configurar as regiões de distribuição global em sua conta antes de habilitar o repositório analítico em um contêiner.
+
+Próxima unidade: Entendendo esquemas bem definidos
+
+Entendendo esquemas bem definidos
+Preenchidas
+100 EXP
+9 minutos
+Há duas restrições que se aplicam à inferência de esquema realizada pelo processo de sincronização automática, que mantém de forma transparente o esquema no repositório analítico com base nos itens adicionados ou atualizados no repositório transacional:
+
+Você pode ter no máximo 1.000 propriedades em qualquer nível de aninhamento em itens armazenados em um repositório transacional. As propriedades acima dele e seus valores associados não serão incluídos no repositório analítico.
+Os nomes de propriedade devem ser exclusivos quando comparados sem distinção entre maiúsculas e minúsculas. Por exemplo, as propriedades {"name": "Franklin Ye"} e {"Name": "Franklin Ye"} não podem sair no mesmo nível de aninhamento de elementos iguais ou diferentes em um contêiner, pois "name " e "Name " não são únicos quando comparados sem distinção entre maiúsculas e minúsculas.
+No repositório analítico, há duas maneiras de representar o esquema de seus dados armazenados. Esses modos têm vantagens em termos de simplicidade de renderização colunar, controle de esquemas polimórficos e simplicidade da experiência de consulta:
+
+Representação esquemática bem definida
+Representação de esquemas com total fidelidade
+Para contas de API SQL (Core), quando o armazenamento analítico está ativado, a representação de esquema padrão nele é a representação bem definida. Considerando que, no caso da conta da API do Azure Cosmos DB para MongoDB, a representação de esquema padrão no repositório analítico é uma representação de esquema de fidelidade total. (Se você tiver cenários que exigem uma representação de esquema diferente do padrão para cada uma dessas APIs, entre em contato com a equipe do Azure Cosmos DB para habilitá-lo.)
+
+Representação esquemática bem definida
+A representação de esquema bem definida cria uma representação tabular simples dos dados independentes de esquema no armazenamento transacional conforme você os copia para o armazenamento analítico.
+
+O snippet de código a seguir é um exemplo de documento JSON que representa um registro de perfil de cliente:
+
+
+A representação de esquema bem definida tem as propriedades de nível superior dos documentos expostos como colunas quando consultados no Synapse SQL e no Synapse Spark, juntamente com os valores das colunas que representam os valores das propriedades. Exceto se esses valores forem do tipo objeto ou array, nesse caso uma representação JSON dos valores da propriedade é mapeada para os valores da coluna, e eles possuem as seguintes considerações adicionais:
+
+As propriedades sempre têm o mesmo tipo entre os elementos.
+
+Por exemplo, {"postcode":98065}e {"postcode": "CR30AA"}não tem um esquema bem definido porque "código postal" às vezes é uma string e às vezes um número. Nesse caso, o armazenamento analítico registra o tipo de dados do atributo "código postal" no armazenamento analítico, como o tipo de dados da propriedade "código postal" na primeira ocorrência no tempo de vida do contêiner; itens em que o tipo de dados do atributo "código postal" difere deste valor registrado não serão incluídos no armazenamento analítico.
+
+Essa condição não se aplica a propriedades NULL.
+
+Por exemplo, {"postcode":98065} {"postcode":null} ainda está bem definido.
+
+Os tipos de matriz devem conter um único tipo repetido.
+
+Por exemplo, {"postcode": [98065, “CR30AA”]} não é um esquema bem definido, porque a matriz contém uma mistura de tipos inteiros e de string.
+
+É importante ressaltar que quando o repositório analítico do Azure Cosmos DB usa um modo de representação de esquema bem definido dos dados armazenados nos documentos adicionados ao contêiner que viola as regras acima, esses documentos não são incluídos no repositório analítico.
+
+
+epresentação esquemática totalmente fiel
+A representação de esquema totalmente fiel cria uma representação tabular mais complexa dos dados independentes de esquema no armazenamento transacional à medida que você os copia para o armazenamento analítico. A representação de esquema totalmente fiel tem as propriedades de nível superior dos documentos expostos como colunas quando consultados no Synapse SQL e no Synapse Spark, juntamente com uma representação JSON dos valores de propriedade que contém como valores de coluna. Isso é estendido para incluir o tipo de dados das propriedades junto com seus valores de propriedade e, como tal, pode controlar melhor os esquemas polimórficos de operações. Com essa representação de esquema, nenhum item é substituído do armazenamento analítico devido à necessidade de aderir a regras de esquema bem definidas.
+
+Esquemas de design que suportam o tipo de análise
+Preenchidas
+100 EXP
+7 minutos
+Agora que você entende como os dados são transformados e representados no armazenamento analítico, há algumas considerações adicionais que você deve levar em consideração ao modelar seus dados para que possa suportar consultas analíticas do armazenamento analítico com mais conforto.
+
+Tipos de entidade mista por contêiner
+Você pode querer misturar diferentes tipos de entidade de documento (entidades) no mesmo contêiner, o que é útil para recuperar dados de forma eficiente de ambas as entidades usando uma única consulta. Por exemplo, você pode colocar o perfil do cliente e os dados do pedido de venda no mesmo contêiner e partição usando customerId. Nesta situação, normalmente é adicionado um campo aos documentos que identifica o tipo de entidade de cada um para diferenciá-los no momento da consulta.
+
+Por sua vez, essa abordagem de modelagem é potencialmente útil para consultas do Cosmos DB de armazenamento transacional. Todos os documentos em um único contêiner são mapeados para um único repositório analítico, levando a repositórios de colunas que são gerados esparsamente com diferentes tipos de dados que precisam ser mais independentes ao executar uma consulta analítica.
+
+Recomendação: Assim como em muitas decisões de design, há uma compensação entre a eficiência de consultar o armazenamento transacional e a facilidade de consultar o armazenamento analítico. Avalie cuidadosamente a utilidade de armazenar uma combinação de diferentes tipos de entidade de documento no mesmo contêiner como cargas de trabalho transacionais. Se você optar por fazer isso, será solicitado a filtrar a propriedade do tipo de entidade de propriedade que você selecionou.
+
+Inserindo entidades de matriz
+Ao otimizar modelos de dados transacionais, optamos por inserir entidades em uma matriz de um documento, especialmente para cargas de trabalho de leitura intensa em que:
+
+Existem relacionamentos contidos entre entidades.
+Existem relacionamentos um-para-algum entre entidades.
+Há dados incorporados que mudam com pouca frequência.
+Existem dados incorporados que não crescerão sem limites.
+Há dados incorporados que são frequentemente consultados juntos.
+Devido ao fato de haver entre um e muitos relacionamentos entre as entidades incorporadas que são representadas em um único documento, elas são mapeadas para uma única coluna de uma única linha no repositório analítico. A matriz inteira de entidades incorporadas residirá em um único valor de coluna e deve ser convertida de sua representação JSON no momento da consulta para recuperar os valores da entidade incorporada, independentemente de qual dos dois modos de representação de esquema é usado.
+
+Recomendação: Um equilíbrio precisa ser alcançado novamente entre a utilidade da injeção de entidade de aplicativo transacional e a complexidade adicional de escrever consultas nos documentos JSON incorporados do aplicativo.
+
+Particionamento de dados
+Todos os dados em um contêiner do Azure Cosmos DB são particionados com base na chave de partição e aplicados ao repositório transacional e ao repositório analítico. Os limites de paralelização de carga de trabalho são baseados nessa chave de partição.
+
+A disciplina associada no momento em que os dados aparecem no repositório analítico para uma consulta só é garantida em uma partição. Por exemplo, quando os documentos (1) (2) (3) são inseridos no repositório transacional em uma única partição, é garantido que eles serão encontrados no repositório analítico na ordem em que foram inseridos.
+
+Próxima Unidade: Desenhar Cenários de Gravação Preguiçosa
+
+Cenários de escrita preguiçosa de design
+Preenchidas
+100 EXP
+2 minutos
+O repositório analítico do Azure Cosmos DB é somente leitura do ponto de vista das cargas de trabalho analíticas; no entanto, há cenários em que os clientes que usam o repositório transacional do Cosmos DB devem recuperar os resultados de consultas analíticas.
+
+Para esses requisitos, os resultados das consultas analíticas executadas em um repositório analítico do Cosmos DB podem ser gravados de volta no repositório transacional do Cosmos DB usando o Azure Synapse Apache Spark.
+
+Próxima Unidade: Verificação de Conhecimento
+
+Resumo
+Preenchidas
+100 EXP
+3 minutos
+Você viu como o Azure Synapse Analytics Link para Cosmos DB resolve os desafios de disponibilizar dados operacionais para consultas analíticas quase em tempo real por meio de processamento analítico e transacional híbrido.
+
+Agora que você concluiu este módulo, você aprendeu a:
+
+Entenda os padrões de processamento analítico e transacional híbridos
+Descrever as cargas de trabalho de análise compatíveis
+Explicar os cenários HTAP no contexto do Synapse Link
+Descreva o armazenamento analítico
+Entendendo esquemas bem definidos
+Esquemas de design que suportam o tipo de análise
+Cenários de escrita preguiçosa de design
+
+Ingeniería de datos con Azure Databricks
+
+Introdução
+Preenchidas
+100 EXP
+4 minutos
+O Azure Databricks é uma versão totalmente gerenciada do mecanismo de análise e processamento de dados Apache Spark de software livre . O Azure Databricks é uma plataforma de aprendizado de máquina e big data segura, de nível empresarial e baseada em nuvem.
+
+O Databricks fornece um ambiente de ambiente de trabalho como serviço Apache Spark orientado a notebook, facilitando o gerenciamento de clusters e o exame interativo de dados.
+
+Objetivos de aprendizado
+Neste módulo, você aprenderá a:
+
+Descrever a plataforma Azure Databricks
+Crie seu próprio espaço de trabalho do Azure Databricks
+Crie um notebook dentro da pasta principal do Databricks
+Entenda os fundamentos dos notebooks Apache Spark
+Criar ou conectar-se a um cluster Spark
+Identifique os tipos de tarefas mais apropriados para o mecanismo de análise unificada do Apache Spark
+
+Azure Databricks explicado
+Preenchidas
+100 EXP
+10 minutos
+O Azure Databricks é uma plataforma de big data e aprendizado de máquina totalmente gerenciada e baseada em nuvem que permite que os desenvolvedores acelerem a IA e a inovação simplificando o processo de criação de aplicativos de dados de produção de nível empresarial. Criado como uma iniciativa conjunta da equipe que iniciou o Apache Spark e a Microsoft, o Azure Databricks fornece às equipes de ciência de dados e engenharia uma plataforma única para processamento de big data e aprendizado de máquina.
+
+Ao combinar o poder do Databricks, uma plataforma Apache Spark gerenciada de ponta a ponta e otimizada para nuvem, com a segurança e a escala corporativa da plataforma Azure da Microsoft, o Azure Databricks facilita a execução de cargas de trabalho do Spark em grande escala.
+
+ambiente otimizado
+Para resolver problemas encontrados em outras plataformas de big data, o Azure Databricks foi otimizado desde o início com foco no desempenho e na relação custo-benefício na nuvem. O tempo de execução do Databricks adiciona vários recursos importantes às cargas de trabalho do Apache Spark que podem aumentar o desempenho e reduzir os custos em um fator de 10 a 100 ao executar no Azure, incluindo:
+
+Conectores de alta velocidade para serviços de armazenamento do Azure, como Azure Blob Store e Azure Data Lake
+Dimensionamento automático e encerramento automático de clusters Spark para minimizar custos
+cache
+indexação
+Otimização avançada de consultas
+Ao fornecer um ambiente simplificado que é fácil de provisionar e configurar, o Azure Databricks oferece aos desenvolvedores uma plataforma econômica e eficiente que permite que eles gastem mais tempo criando aplicativos e menos tempo se concentrando no gerenciamento de cluster e infraestrutura.
+
+Quem é a Databricks?
+Os criadores do Apache Spark, Delta Lake e MLflow fundaram a Databricks.
+
+Mais de 2.000 empresas globais usam a plataforma Databricks no ciclo de vida de aprendizado de máquina e big data.
+
+Databricks Vision – Acelere a inovação unificando a ciência de dados, a engenharia de dados e a empresa.
+Em essência, é o motor Spark.
+A API DataFrames fornece uma abstração sobre Resilient Distributed Datasets (RDD), enquanto melhora o desempenho de 5 a 20 vezes em relação ao RDD tradicional com seu otimizador Catalyst.
+O Spark ML fornece algoritmos de aprendizado de máquina altamente otimizados e de alta qualidade para processamento de big data.
+A Graph Processing API nos fornece uma API facilmente acessível para modelar relacionamentos de pares entre pessoas, objetos ou nós em uma rede.
+As APIs de streaming nos dão tolerância a falhas de ponta a ponta, com semântica única e a possibilidade de latência abaixo de milissegundos.
+E tudo funciona perfeitamente em conjunto.
+
+Azure Databricks
+Solução Databricks - Plataforma de Big Data Analytics
+
+O que o Databricks oferece que o Spark de código aberto não oferece?
+Databricks Workspace: colaboração e ciência de dados interativos
+Fluxos de trabalho do Databricks: trabalhos de produção e automação de fluxo de trabalho
+Ambiente de execução do Databricks
+Databricks I/O (DBIO): camada de acesso a dados otimizada
+Databricks Serverless - Plataforma de autoajuste totalmente gerenciada
+Databricks Enterprise Security (DBES): segurança e conformidade de ponta a ponta
+O que é Apache Spark?
+O Spark é um mecanismo de processamento unificado que pode analisar big data com SQL, aprendizado de máquina, processamento de gráficos ou análise de fluxo em tempo real:
+
+Como um mecanismo de computação, o Azure Databricks está no centro da plataforma de software baseada no Azure, fornecendo integração nativa com o Azure Active Directory (Azure AD) e outros serviços do Azure.
+
+Scala, Python, Java, R e SQL
+Além de poder ser executado em vários ambientes, o Apache Spark torna a plataforma ainda mais acessível ao oferecer suporte a vários idiomas:
+Scala: linguagem principal do Apache Spark
+Python: mais conhecido como PySpark
+R: SparkR (R em Spark)
+Java
+SQL: mais próximo da compatibilidade com ANSI SQL 2003
+Agora todas as 99 consultas TPC-DS são executadas
+Novo analisador compatível com padrões (com boas mensagens de erro)
+Subconsultas (correlacionadas e não correlacionadas)
+Estatísticas agregadas aproximadas
+Com a API DataFrames, as diferenças de desempenho entre linguagens são quase inexistentes (especialmente para Scala, Java e Python).
+Próxima unidade: Criar um espaço de trabalho e cluster do Azure Databricks
+
+
+Criar um espaço de trabalho e cluster do Azure Databricks
+Preenchidas
+100 EXP
+10 minutos
+Ao falar sobre o espaço de trabalho do Azure Databricks, estamos falando de duas coisas diferentes. A primeira referência é o ambiente lógico do Azure Databricks onde os clusters são criados, os dados são armazenados (usando DBFS) e os recursos do servidor são hospedados. A segunda referência é a mais usada no contexto do Azure Databricks. Esta é a pasta raiz especial para todos os recursos do Databricks em sua organização, incluindo notebooks, bibliotecas e painéis, conforme mostrado abaixo:
+
+Implantar um espaço de trabalho do Azure Databricks
+Abra o Portal do Azure.
+Clique em Criar um recurso no canto superior esquerdo.
+Procure por "Databricks"
+Selecione Azure Databricks .
+Na página Azure Databricks, selecione Criar .
+Forneça os valores necessários para criar o espaço de trabalho Azure Databricks:
+Assinatura - escolha a assinatura do Azure na qual implantar o workspace.
+Grupo de recursos - use Criar novo e digite um nome para o novo grupo de recursos.
+Local - Selecione um local próximo para a implantação. Para obter a lista de regiões com suporte do Azure Databricks, confira Produtos disponíveis por região .
+Nome do espaço de trabalho – forneça um nome exclusivo para o espaço de trabalho.
+Plano tarifário : Avaliação (Premium - DBU 14 dias grátis) . Você deve selecionar esta opção ao criar o espaço de trabalho, caso contrário, você será cobrado. A área de trabalho será suspensa automaticamente após 14 dias. Quando a avaliação gratuita terminar, você poderá atualizar seu workspace para Premium , mas será cobrado pelo uso.
+Selecione Revisar + Criar .
+Selecione Criar .
+Demora alguns minutos para criar o espaço de trabalho. Durante a criação do espaço de trabalho, o ícone Enviando Implantação para Azure Databricks aparece no lado direito do portal. Talvez seja necessário rolar para a direita do painel para ver o ícone. Há também uma barra de progresso exibida na parte superior da tela. Você pode verificar o progresso em qualquer um.
+
+O que é um aglomerado?
+Os notebooks são apoiados por clusters ou computadores em rede que colaboram para processar os dados. O primeiro passo é criar um cluster.
+
+Criar um cluster
+Quando terminar de criar seu espaço de trabalho Azure Databricks, selecione o link para acessar o recurso.
+
+Selecione Iniciar área de trabalho para abrir a área de trabalho do Databricks em uma nova guia.
+
+No menu esquerdo da área de trabalho do Databricks, selecione Processar .
+
+Selecione Criar cluster para adicionar um novo cluster.
+
+Digite um nome para o cluster. Use seu nome ou iniciais para diferenciar facilmente seu cluster dos de seus colegas de trabalho.
+
+Selecione o modo de cluster : nó único .
+
+Selecione a versão do tempo de execução do Databricks : Runtime: 7.3 LTS (Scala 2.12, Spark 3.0.1) .
+
+Em Opções do piloto automático , deixe a caixa de seleção marcada e, na caixa de texto, digite.
+
+Selecione o Tipo de Nó : Standard_DS3_v2 .
+
+Selecione Criar cluster .
+
+Próxima unidade: Noções básicas sobre notebooks Azure Databricks
+
+Descrição dos blocos de anotações do Azure Databricks
+Preenchidas
+100 EXP
+10 minutos
+Com seu espaço de trabalho Databricks criado, é hora de criar seu primeiro notebook. Para executar o notebook, você precisará anexar o cluster criado na unidade anterior.
+
+O que é um notebook Apache Spark?
+Um notebook é uma coleção de células. Essas células são usadas para executar código, renderizar texto formatado ou exibir exibições gráficas.
+
+Criar um caderno
+No portal do Azure, clique no menu Todos os recursos na navegação à esquerda e selecione o espaço de trabalho Databricks criado na última unidade.
+
+Selecione Iniciar área de trabalho para abrir a área de trabalho do Databricks em uma nova guia.
+
+No menu à esquerda do espaço de trabalho do Databricks, selecione Home .
+
+Clique com o botão direito do mouse na pasta pai.
+
+Selecione Criar .
+
+Selecione Caderno .
+
+
+Nomeie o notebook como Primeiro Notebook.
+
+Defina o idioma para Python .
+
+Selecione o cluster ao qual este notebook deve ser associado.
+
+ Observação
+
+Essa opção só é exibida se houver algum cluster em execução no momento. Você ainda pode criar o notebook e anexá-lo a um cluster posteriormente.
+
+Selecione Criar .
+
+Agora que você criou o notebook, ele será usado para executar o código.
+
+Associação e desassociação do notebook
+Para usar o notebook para executar o código, você deve associá-lo a um cluster. Você também pode desanexar o notebook de um cluster e anexá-lo a outro com base nos requisitos da sua organização.
+
+Se o notebook estiver associado a um cluster, você poderá:
+
+Desanexar o notebook do cluster
+Reinicie o cluster
+Anexar a outro cluster
+Abra a interface do Spark
+Visualize os arquivos de log do driver.
+Próxima Unidade: Exercício: Trabalhando com Notebooks
+
+
+Exercício: Trabalhar com Notebooks
+Preenchidas
+100 EXP
+10 minutos
+Você pode usar notebooks Apache Spark para:
+
+Ler e processar grandes arquivos e conjuntos de dados
+Consulte, navegue e visualize conjuntos de dados
+Junte-se a diferentes conjuntos de dados encontrados no Data Lake
+Treinar e avaliar modelos de aprendizado de máquina
+Processar fluxos de dados ao vivo
+Realizar análise de gráficos de grandes conjuntos de dados e redes sociais
+Para obter mais informações sobre o uso de notebooks, clone o arquivo de laboratório onde os notebooks de exemplo são fornecidos. Esses notebooks ajudarão você a entender como usá-los para tarefas diárias.
+
+Clonando o arquivo Databricks
+No portal do Azure, vá para o Azure Databricks Deployed Workspace e selecione Launch Workspace .
+
+No painel esquerdo, selecione Workspace > Users e o nome de usuário (a entrada com o ícone de casa).
+
+No painel exibido, selecione a seta ao lado do nome e selecione Importar .
+
+Clique em Importar .
+Selecione a pasta 01-Introduction-to-Azure-Databricks que aparece.
+Para concluir este laboratório, use o conjunto de notebooks nesta pasta.
+Conclusão do seguinte caderno
+01-The-Databricks-Environment - Este notebook mostra o básico de um notebook Databricks.
+Próxima Unidade: Verificação de Conhecimento
+
+Resumo
+Preenchidas
+100 EXP
+4 minutos
+Neste módulo, você aprendeu o básico sobre como usar o espaço de trabalho Databricks e os notebooks Apache Spark. Os notebooks permitem que você trabalhe interativamente com diferentes tipos de dados. Você pode usar notebooks para processar grandes arquivos de dados, consultar, ler e gravar dados de diferentes fontes, treinar modelos de aprendizado de máquina e processar fluxos de dados ao vivo.
+
+Agora que você terminou este módulo, você deve saber como fazer o seguinte:
+
+Criar um cluster
+Anexar um notebook a um cluster
+Executar código Python, Scala, SQL ou R em uma célula de notebook
+Desanexar um notebook de um cluster
+Adapte o Azure Databricks ao ecossistema do Azure
+Trabalhar com DBFS para apresentar o armazenamento Blob como um sistema de arquivos
+Limpeza
+Se você planeja concluir outros módulos do Azure Databricks, não exclua a instância do Azure Databricks ainda. Você pode usar o mesmo ambiente para o restante dos módulos.
+
+Excluir a instância do Azure Databricks
+Vá para o portal do Azure.
+Navegue até o grupo de recursos que contém a instância do Azure Databricks.
+Selecione Excluir grupo de recursos .
+Digite o nome do grupo de recursos na caixa de texto de confirmação.
+Selecione Excluir .
+
+Processamento de dados em larga escala com Azure Data Lake Storage Gen2
+1h 5min remanescente
+caminho de aprendizagem
+0 de 3 módulos concluídos
+Principiante
+engenheiro de dados
+Azure
+Portal do Azure
+Armazenar
+Máquinas virtuais
+Neste caminho de aprendizado, você verá como o Azure Data Lake Storage ajuda a tornar as soluções de análise de big data mais eficientes e como é fácil configurar. Você também explorará como ele se encaixa em arquiteturas comuns, bem como os diferentes métodos de carregamento de dados no data warehouse. Por fim, você examinará a ampla variedade de recursos de segurança que garantirão a segurança dos dados.
+
+Descrição do Azure Data Lake Storage Gen2
+Preenchidas
+100 EXP
+4 minutos
+O termo "data lake" define um repositório de dados que é armazenado em seu formato natural, normalmente como blobs ou arquivos. O Azure Data Lake Storage é uma solução de data lake completa, escalável e econômica para análise de big data criada no Azure.
+
+O Azure Data Lake Storage combina um sistema de arquivos com uma plataforma de armazenamento para ajudar a identificar rapidamente insights nos dados. O Azure Data Lake Storage Gen2 se baseia nos recursos do armazenamento de BLOBs do Azure para ser otimizado especificamente para cargas de trabalho de análise. Essa integração facilita o desempenho analítico, os recursos de gerenciamento do ciclo de vida de dados e a classificação em camadas do armazenamento de Blobs e os recursos de alta disponibilidade, segurança e durabilidade do Armazenamento do Azure.
+
+A variedade e o volume de dados gerados e analisados hoje estão aumentando. As empresas têm uma variedade de fontes de dados, de sites a sistemas de ponto de venda (POS) e, mais recentemente, de redes sociais a dispositivos de Internet das Coisas (IoT). Cada fonte fornece um aspecto essencial dos dados que precisam ser extraídos, analisados e potencialmente manipulados.
+
+Vantagem
+O Data Lake Storage Gen2 foi projetado para lidar com essa variedade e volume de dados em escala de exabytes, enquanto gerencia centenas de gigabytes de saída. Isso permite que o Data Lake Storage Gen2 seja usado como base para soluções em tempo real e em lote. Aqui está uma lista de benefícios adicionais que o Data Lake Storage Gen2 oferece:
+
+Acesso compatível com Hadoop
+Uma vantagem do Data Lake Storage Gen2 é que ele permite que você trate os dados como se estivessem armazenados em um Hadoop Distributed File System. Com esse recurso, os dados podem ser armazenados em um local e acessados por meio de tecnologias de computação, incluindo Azure Databricks, Azure HDInsight e Azure Synapse Analytics sem mover dados entre ambientes.
+
+Segurança
+O Data Lake Storage Gen2 oferece suporte a listas de controle de acesso (ACLs) e permissões POSIX (Portable Operating System Interface). Você pode definir permissões para dados armazenados em um data lake em um diretório ou nível de arquivo. Essa segurança pode ser configurada usando tecnologias como Hive e Spark ou utilitários como Azure Storage Explorer. Todos os dados armazenados são criptografados em repouso usando chaves gerenciadas pelo cliente ou gerenciadas pela Microsoft.
+
+Desempenho
+O Azure Data Lake Storage organiza os dados armazenados em uma hierarquia de diretórios e subdiretórios como um sistema de arquivos para facilitar a navegação. Como resultado, o processamento de dados requer menos recursos de computação, reduzindo tempo e custo.
+
+redundância de dados
+O Data Lake Storage Gen2 aproveita os modelos de replicação do Azure Blob que fornecem redundância de dados em um único data center com armazenamento localmente redundante (LRS) ou em uma região secundária usando a opção de armazenamento com redundância geográfica (GRS). Esse recurso garante que os dados estejam sempre disponíveis e protegidos em caso de catástrofe.
+
+Próxima unidade: Exercício: Criar uma conta de armazenamento do Azure usando o portal
+Continuar
+
+Exercício: Criar uma conta de armazenamento do Azure usando o portal
+Preenchidas
+100 EXP
+5 minutos
+O Azure Data Lake Storage Gen2 é fácil de configurar. Requer uma conta de armazenamento do Azure do tipo StorageV2 (uso geral v2) com namespace hierárquico habilitado. Vejamos um exemplo de como configurar uma conta do Data Lake Storage no portal do Azure.
+
+Entrar no Portal do Azure
+
+Selecione Criar um recurso e, na caixa de texto "Pesquisar no Marketplace", digite Conta de armazenamento e clique em Conta de armazenamento .
+
+Na tela Conta de armazenamento , clique em Criar .
+
+Em seguida, na janela Criar conta de armazenamento , na guia Básico , na seção Detalhes do projeto, certifique-se de que a assinatura e o grupo de recursos apropriados estejam selecionados. Na seção Instância, defina um nome para a conta de armazenamento . Defina a região para Central US. Na lista de botões de opção Performance , selecione Standard e defina Redundancy to Locally Redundant Storage (LRS) .
+
+Selecione a guia Avançado , na seção Data Lake Storage Gen2, clique na caixa de seleção ao lado de Habilitar namespace hierárquico , conforme mostrado abaixo.
+
+Selecione a guia Revisar + Criar e clique em Criar .
+
+Agora, essa nova conta de armazenamento do Azure está configurada para hospedar dados de uma instância do Azure Data Lake. Depois que a conta for implantada, você encontrará as opções relacionadas ao Azure Data Lake na página Visão geral.
+
+Selecione a guia Revisar + Criar e clique em Criar .
+
+Agora, essa nova conta de armazenamento do Azure está configurada para hospedar dados de uma instância do Azure Data Lake. Depois que a conta for implantada, você encontrará as opções relacionadas ao Azure Data Lake na página Visão geral.
+
+Comparação entre o Azure Data Lake Storage e o Armazenamento de Blobs do Azure
+Preenchidas
+100 EXP
+5 minutos
+Grandes quantidades de dados não estruturados ("objetos") podem ser armazenadas no armazenamento de Blobs do Azure em uma única hierarquia, também conhecida como namespace simples. Esses dados podem ser acessados via HTTP ou HTTPs. O Azure Data Lake Storage Gen2 é baseado no armazenamento de Blobs e otimiza a E/S de dados de alto volume usando os namespaces hierárquicos que foram habilitados no exercício anterior.
+
+Os namespaces hierárquicos organizam os dados do blob em diretórios e armazenam metadados sobre cada diretório e os arquivos que ele contém. Essa estrutura permite que operações como exclusões e renomeações de diretórios sejam executadas em uma única operação atômica. Em contraste, os namespaces simples requerem várias operações proporcionais ao número de objetos na estrutura. Os namespaces hierárquicos mantêm os dados organizados, resultando em melhor armazenamento e desempenho de recuperação para um caso de uso de análise e reduz o custo da análise.
+
+Armazenamento de Blobs do Azure vs. Armazenamento do Azure Data Lake
+Se você quiser armazenar dados sem analisá-los , defina a opção de namespace hierárquico como desabilitada para configurar a conta de armazenamento como uma conta de armazenamento de BLOBs do Azure. Você também pode usar o armazenamento Blob para arquivar dados usados com pouca frequência ou para armazenar recursos do site, como imagens e mídia.
+
+Se você for realizar análise de dados, configure sua conta de armazenamento como uma conta do Azure Data Lake Storage Gen2. Para fazer isso, defina a opção Hierarchical Namespace como Enabled . Como o Azure Data Lake Storage Gen2 é criado com base na plataforma de armazenamento do Azure, os aplicativos podem usar as APIs de Blob ou as APIs do sistema de arquivos do Azure Data Lake Storage Gen2 para acessar dados.
+
+Próxima unidade: Entendendo os estágios do processamento de big data usando o Azure Data Lake Storage
+
+Descrição dos estágios de processamento de big data usando o Azure Data Lake Storage
+Preenchidas
+100 EXP
+3 minutos
+O Azure Data Lake Storage Gen2 desempenha um papel crítico em uma ampla variedade de arquiteturas de big data. Essas arquiteturas podem levar à criação de:
+
+Um armazenamento de dados moderno.
+Análise avançada com big data.
+Uma solução de análise em tempo real.
+Existem quatro fases de processamento de soluções de big data que são comuns a todas as arquiteturas:
+
+Ingestão – A fase de ingestão identifica a tecnologia e os processos usados ​​para adquirir os dados de origem. Esses dados podem vir de arquivos, logs e outros tipos de dados não estruturados que devem ser colocados no Data Lake Storage. A tecnologia utilizada irá variar dependendo da frequência com que os dados são transferidos. Por exemplo, para mover lotes de dados, o Azure Data Factory pode ser a tecnologia mais apropriada. Para ingestão de dados em tempo real, Apache Kafka para HDInsight ou Stream Analytics podem ser tecnologias apropriadas.
+Armazenamento – A fase de armazenamento identifica onde os dados ingeridos devem ser colocados. Nesse caso, o Azure Data Lake Storage Gen2 é usado.
+Preparar e treinar – A fase Preparar e treinar identifica as tecnologias usadas para realizar a preparação de dados e treinamento de modelo e pontuação para soluções de ciência de dados. As tecnologias comuns usadas nesta fase são Azure Databricks, Azure HDInsight ou Azure Machine Learning Services.
+Modelagem e entrega – Por fim, a fase de modelagem e entrega envolve as tecnologias que vão apresentar os dados aos usuários. Eles podem incluir ferramentas de visualização como Power BI ou outros armazenamentos de dados como Azure Synapse Analytics, Azure Cosmos DB, Banco de Dados SQL do Azure ou Azure Analysis Services. Muitas vezes, uma combinação dessas tecnologias será usada, dependendo dos requisitos de negócios.
+Próxima unidade: Examinando os usos do Azure Data Lake Storage Gen2
+
+Examinando os usos do Azure Data Lake Storage Gen2
+Preenchidas
+100 EXP
+5 minutos
+Serão examinados três casos de uso para empregar uma instância do Azure Data Lake Storage.
+
+Construindo um data warehouse moderno
+Imagine que você seja um consultor de engenharia de dados da Contoso. No passado, a empresa construiu uma solução de business intelligence local que usava o Microsoft SQL Server Database Engine, SQL Server Integration Services, SQL Server Analysis Services e SQL Server Reporting Services para fornecer relatórios históricos. Eles tentaram usar o componente de mineração de dados do Analysis Services para criar uma solução de análise preditiva para prever o comportamento de compra do cliente. Embora esse método tenha funcionado bem com um baixo volume de dados, ele não pôde ser dimensionado após a coleta de mais de um gigabyte de dados. Além disso, os dados JSON gerados por um aplicativo de terceiros não podiam ser processados quando um cliente usava o módulo de feedback do aplicativo de PDV.
+
+A Contoso recorreu a você para ajudá-los a criar uma arquitetura que possa ser dimensionada com as necessidades de dados para criar um modelo preditivo e manipular os dados JSON para que possam ser integrados à solução de business intelligence. Você decide recomendar a seguinte arquitetura:
+
+
+A arquitetura usa o Azure Data Lake Storage como o centro da solução para armazenamento de dados moderno. O Integration Services é substituído pelo Azure Data Factory para ingerir dados de um aplicativo corporativo em um Data Lake. Esta é a fonte do modelo de previsão incorporado ao Azure Databricks. O PolyBase é usado para transferir dados históricos em um formato relacional de big data que é mantido no Azure Synapse Analytics, onde os resultados do modelo treinado do Databricks também são armazenados. O Azure Analysis Services fornece capacidade de armazenamento em cache para o SQL Data Warehouse para atender a muitos usuários e apresentar os dados por meio de relatórios do Power BI.
+
+Análise avançada para Big Data
+Neste segundo caso de uso, o Azure Data Lake Storage desempenha um papel importante no fornecimento de um armazenamento de dados em grande escala. A AdventureWorks precisa de suas habilidades; é um vendedor global de bicicletas e componentes de ciclismo através de uma cadeia de distribuidores e na Internet. Quando os clientes navegam no catálogo de produtos em seus sites e adicionam os itens ao carrinho de compras, um mecanismo de recomendação integrado ao Azure Databricks recomenda outros produtos. Eles precisam garantir que os resultados do mecanismo de recomendação possam ser dimensionados globalmente. As recomendações são baseadas em arquivos de log da Web armazenados em servidores Web e transferidos de hora em hora para o modelo Azure Databricks. O tempo de resposta de uma recomendação deve ser inferior a 1 ms.
+
+Nesta solução, o Azure Data Factory transfere terabytes de logs da Web de um servidor Web para o Azure Data Lake a cada hora. Esses dados são fornecidos como recursos para o modelo preditivo do Azure Databricks, que é treinado e pontuado. Os resultados são distribuídos globalmente usando o Azure Cosmos DB, que é usado pelo aplicativo em tempo real (o site AdventureWorks) para fornecer recomendações aos clientes à medida que eles adicionam produtos ao carrinho de compras online.
+
+Para completar essa arquitetura, o PolyBase é usado no Data Lake para transferir dados descritivos para a instância do SQL Data Warehouse para geração de relatórios. O Azure Analysis Services fornece funcionalidade de cache para SQL Data Warehouse para atender a muitos usuários e exibir os dados por meio de relatórios do Power BI.
+
+Soluções de análise em tempo real
+Para executar soluções de análise em tempo real, a fase de ingestão da arquitetura é alterada para soluções de processamento de big data. Nesta arquitetura, observe a introdução do Apache Kafka para Azure HDInsight para ingerir dados de streaming de um dispositivo da Internet das Coisas (IoT), embora isso possa ser substituído pelo Hub IoT do Azure e Azure Stream Analytics. A chave é que os dados sejam armazenados no Data Lake Storage Gen2 para fornecer serviço a outras partes da solução.
+
+Neste caso de uso, você é um engenheiro de dados que trabalha para a Trey Research, uma organização que colabora com uma empresa de transporte para monitorar a frota de veículos pesados de mercadorias que circulam na Europa. Cada um desses veículos é equipado com hardware de sensor que relata continuamente dados métricos sobre os níveis de temperatura, velocidade, óleo e fluido de freio do veículo. Quando o motor é desligado, o sensor gera um arquivo com informações resumidas sobre a viagem, incluindo quilometragem e altitude. Uma viagem é o período entre ligar e desligar o motor do veículo pesado.
+
+Tanto os dados em tempo real quanto os dados em lote são processados em um modelo de aprendizado de máquina para prever um cronograma de manutenção para cada um dos veículos. Esses dados estão disponíveis para o aplicativo correspondente que as empresas de garagem podem usar se um veículo pesado quebrar em qualquer lugar da Europa. Além disso, relatórios históricos sobre o veículo devem ser apresentados visualmente aos usuários. Como resultado, a seguinte arquitetura é proposta:
+
+Nessa arquitetura, há dois fluxos de ingestão. O Azure Data Factory ingere arquivos de resumo que são gerados quando o mecanismo do HGV está desligado. O Apache Kafka fornece o mecanismo de ingestão em tempo real para dados de telemetria. Os dois fluxos de dados são mantidos no Azure Data Lake Storage para uso futuro, mas também são enviados para outras tecnologias para atender às necessidades de negócios. Os dados de streaming e em lote são fornecidos ao modelo preditivo do Azure Databricks e os resultados são publicados no Azure Cosmos DB para uso por outras oficinas de automóveis. O PolyBase ingere dados do Azure Data Lake Storage para o SQL Data Warehouse, onde o Azure Analysis Services cria os relatórios HGV usando o Power BI.
+
+Próxima Unidade: Resumo
+
+
+Implemente uma solução de streaming de dados com o Azure Stream Analytics
+2h18min.
+caminho de aprendizagem
+0 de 3 módulos concluídos
+Principiante
+engenheiro de dados
+Azure
+Portal do Azure
+Armazenar
+Análise de fluxo
+Saiba mais sobre os conceitos de streaming de dados e processamento de eventos e como eles se aplicam ao Azure Stream Analytics. Em seguida, você configurará um trabalho do Stream Analytics para transmitir dados e aprenderá a gerenciar e monitorar um trabalho em execução.
+
+Introdução
+Preenchidas
+100 EXP
+5 minutos
+Hoje, aplicativos conectados, dispositivos e sensores da Internet das Coisas (IoT) e uma variedade de outras fontes geram grandes quantidades de dados em tempo real. A proliferação dessas fontes de dados de streaming tornou a capacidade de consumir e tomar decisões informadas a partir desses dados em tempo quase real uma necessidade operacional para muitas organizações.
+
+Para citar alguns exemplos, as lojas online analisam dados de cliques em tempo real para fornecer recomendações de produtos aos consumidores enquanto navegam pelo site. As instalações de fabricação usam dados de telemetria de sensores IoT para monitorar remotamente ativos de alto valor. E as transações com cartão de crédito dos sistemas de ponto de venda são examinadas em tempo real para detectar e prevenir atividades potencialmente fraudulentas.
+
+O Azure Stream Analytics integra perfeitamente sua arquitetura de aplicativo em tempo real com um mecanismo de análise de fluxo para transformar dados de fluxo em insights acionáveis. O uso do Azure Stream Analytics permite uma análise de dados poderosa e em tempo real, independentemente do volume.
+
+Neste módulo, você aprenderá como funciona a análise em tempo real de dados de fluxo, em princípio. Você também aprenderá como usar o Azure Stream Analytics para integrar dados de streaming em seus fluxos de trabalho de análise em tempo real.
+
+Objetivos de aprendizado
+Neste módulo, você aprenderá o seguinte:
+
+Definição de fluxos de dados
+Descrição do processamento de eventos
+Saiba mais sobre o processamento de eventos com o Azure Stream Analytics
+Próxima Unidade: Definindo Fluxos de Dados
+
+Definição de fluxos de dados
+Preenchidas
+100 EXP
+5 minutos
+No contexto da análise, os fluxos de dados são dados sobre a ocorrência de atividades específicas que são emitidas por aplicativos, dispositivos IoT, sensores ou outras fontes conhecidas como produtores de dados. Esses fluxos de dados gerados perpetuamente geralmente contêm informações temporárias e adicionais sobre eventos. A proliferação de dispositivos e aplicativos conectados levou a um crescimento exponencial no número de fontes de dados de fluxo nos últimos anos.
+
+Os fluxos de dados são usados principalmente para entender melhor as mudanças ao longo do tempo. Por exemplo, uma organização pode realizar uma análise de sentimento em tweets para ver se uma campanha publicitária gera comentários mais positivos sobre a empresa ou seus produtos.
+
+Análise de fluxos de dados
+Hoje, os fluxos de dados são onipresentes. A análise de um fluxo de dados geralmente é feita para medir como o estado de um evento muda ao longo do tempo ou para capturar informações sobre uma área de interesse. A intenção é:
+
+Analise os dados continuamente para detectar problemas e compreendê-los ou respondê-los.
+Compreender o comportamento de um componente ou sistema sob diferentes condições para gerar melhorias nesse componente ou sistema.
+Acione ações ou alertas específicos quando determinados limites forem atingidos.
+Ao analisar fluxos de dados e extrair insights acionáveis, as empresas podem aproveitar o conhecimento latente para melhorar a eficiência, impulsionar a inovação e responder a irregularidades. Exemplos de casos de uso que analisam fluxos de dados incluem:
+
+tendências do mercado de ações
+Empresas de serviços que monitoram dados de tubulações de água, transmissões elétricas e sistemas de distribuição
+Dados de monitoramento de condição de componentes mecânicos nas indústrias automobilística e automotiva
+Dados de monitoramento de equipamentos industriais e de fabricação
+Dados de sensores em transporte, como gerenciamento de tráfego e pedágios em rodovias
+Monitoramento de dados da saúde de um paciente no setor de saúde
+Dados de satélite na indústria espacial
+Detecção de fraudes nos setores bancário e financeiro
+Análise de sentimento em postagens de mídia social
+Abordagens para processamento de fluxo de dados
+Existem duas abordagens para o processamento de fluxo de dados: ao vivo e sob demanda.
+
+A abordagem mais comumente adotada para processar fluxos de dados é analisar continuamente novos dados à medida que chegam de um produtor de eventos, como os Hubs de Eventos do Azure. Essa abordagem "ao vivo" requer mais poder de processamento para realizar cálculos, mas oferece a capacidade de obter informações quase em tempo real. Usando um serviço como o Azure Stream Analytics, você pode executar cálculos e agregações em dados de entrada usando análise temporal. Os resultados dessas consultas podem ser enviados para um painel do Power BI para visualização e análise em tempo real.
+
+O diagrama a seguir mostra uma solução de processamento de fluxo "ao vivo" de ponta a ponta que usa Hubs de Eventos para ingestão de dados de fluxo, Azure Stream Analytics para transformar os dados e Power BI para visualizar e analisar os dados.
+
+A abordagem "sob demanda" para processar dados de fluxo envolve manter todos os dados de entrada em um armazenamento de dados, como Azure Data Lake Storage (ADLS) Gen2 . Esse método permite coletar dados de fluxo ao longo do tempo e armazená-los como dados estáticos. Você pode processar os dados estáticos em lotes quando for conveniente ou durante os períodos em que os custos de processamento forem menores.
+
+O diagrama a seguir mostra uma solução de processamento de fluxo de dados sob demanda. Os Hubs de Eventos do Azure e os dados de fluxo do Hub IoT são gravados como blobs no Azure Data Lake Storage (ADLS) Gen2. Os dados estáticos são então processados ​​com o Azure Stream Analytics e enviados para um painel do Power BI para visualização e análise.
+
+Próxima unidade: Descrição do processamento de eventos
+
+Descrição do processamento de eventos
+Preenchidas
+100 EXP
+5 minutos
+O processamento de eventos refere-se ao consumo e análise de um fluxo de dados contínuo para extrair conhecimento latente e derivar informações acionáveis dos eventos que ocorrem dentro do fluxo. Os pipelines de processamento de eventos fornecem uma solução de ponta a ponta para ingestão, transformação e análise de fluxo de dados e são compostos de três componentes distintos:
+
+Um produtor de eventos , que gera um fluxo de dados de eventos.
+Um processador de eventos responsável por ingerir e transformar dados de eventos de fluxos.
+Um consumidor de eventos que exibe ou consome dados de eventos e executa ações neles.
+
+Produtor de eventos
+Um produtor de eventos é um aplicativo, um dispositivo ou sensor conectado ou qualquer outro serviço que emite continuamente um fluxo de dados de eventos. Os eventos podem ser qualquer ação recorrente, como batimentos cardíacos, um carro passando por um pedágio ou um sensor do motor informando os valores de temperatura de um carro. Cada evento deve incluir informações temporais, como um carimbo de data/hora, indicando quando ocorreu.
+
+Os Hubs de Eventos do Azure e o Hub IoT são frequentemente usados ​​como produtores de eventos no Azure. Esses serviços podem manipular eventos de entrada em grande escala e produzir um fluxo de eventos destinado a serviços de processamento de eventos downstream, como o Azure Stream Analytics.
+
+processador de eventos
+Um processador de eventos é um mecanismo projetado para consumir e transformar fluxos de dados de eventos. Os processadores de eventos exigem a capacidade de consultar facilmente as fatias de tempo. Realizar cálculos ou agregações ao longo do tempo, como contar o número de vezes que um evento ocorre durante um determinado período, é um caso de uso comum. Dependendo do espaço do problema, os processadores de eventos processam um evento de entrada por vez (por exemplo, um monitor de frequência cardíaca) ou vários simultaneamente (por exemplo, o Azure Stream Analytics processando dados dos sensores dos dispositivos).
+
+O Azure Stream Analytics é a maneira mais rápida de colocar o processamento de eventos em funcionamento no Azure. Com o Stream Analytics, você pode ingerir dados de fluxo dos Hubs de Eventos do Azure ou do Hub IoT e executar consultas de análise em tempo real nos fluxos.
+
+O Stream Analytics oferece suporte a vários tipos de funções de janela para realizar cálculos temporais em fluxos de dados, fornecendo uma maneira de agregar eventos em vários intervalos de tempo com base em definições de janela específicas. Ele também fornece a capacidade de usar os recursos do Azure Machine Learning para torná-lo uma ferramenta robusta para analisar fluxos de dados.
+
+consumidor de eventos
+Um consumidor de eventos é um aplicativo que usa a saída de um processador de eventos. Os consumidores de eventos podem ser usados ​​para exibir os dados ou executar uma ação específica com base nas informações, como gerar alertas quando os limites especificados são atingidos ou enviar dados para outro mecanismo de processamento de eventos.
+
+Para visualizar e analisar dados, o Power BI é o consumidor de eventos recomendado. Ele fornece uma plataforma para criar visualizações vinculadas complexas e analisar dados agregados quase em tempo real. O Azure Stream Analytics pode enviar resultados diretamente para o Power BI, permitindo que os painéis sejam atualizados continuamente à medida que os fluxos de dados são processados.
+
+Como criar pipelines de processamento de eventos
+Os pipelines de processamento de eventos normalmente encadeiam vários serviços para criar um pipeline de análise quase em tempo real. O diagrama a seguir mostra um exemplo de pipeline de processamento de eventos com base em Hubs de Eventos, Azure Stream Analytics e Power BI.
+
+Nesse pipeline, os Event Hubs ingerem dados de fluxos de sensores em uma fábrica conectada e, juntos, atuam como produtores de eventos. O processador de eventos é o Azure Stream Analytics, que recebe dados dos Hubs de Eventos e os transforma e agrega. O Power BI, o consumidor de eventos, recebe a saída do Stream Analytics e exibe visualizações avançadas usadas para analisar dados de eventos.
+
+Próxima unidade: Processamento de eventos com Azure Stream Analytics
+
+Processamento de eventos com Azure Stream Analytics
+Preenchidas
+100 EXP
+5 minutos
+O Azure Stream Analytics é um mecanismo de processamento de eventos de plataforma como serviço (PaaS). Torna possível transformar e analisar grandes volumes de dados de fluxos provenientes dos Hubs de Eventos do Azure e do Hub IoT e dados estáticos do Armazenamento do Azure. Com o Stream Analytics, você pode escrever consultas e agregações complexas baseadas em tempo em dados gerados por sensores, dispositivos ou aplicativos conectados. O Stream Analytics processa os dados em tempo real, graças aos quais são obtidas informações valiosas para a tomada de decisões em tempo real. Um pipeline de processamento de eventos típico baseado em Stream Analytics consiste nos quatro componentes a seguir:
+
+Produtor de Eventos – Este é qualquer aplicativo, sistema ou sensor que produz continuamente dados do evento de interesse. Alguns exemplos são sensores que rastreiam o fluxo de água por uma tubulação pública e um aplicativo como o Twitter que gera tweets com uma única hashtag.
+Sistema de ingestão de eventos - recebe dados de um produtor de eventos e os transmite para um mecanismo de análise. Os Hubs de Eventos do Azure, o Hub IoT do Azure ou o Armazenamento de Blobs do Azure podem atuar como o sistema de ingestão.
+Mecanismo de análise de fluxo – a plataforma de computação que processa, agrega e transforma fluxos de dados recebidos. O Azure Stream Analytics fornece o Stream Analytics Query Language (SAQL), um subconjunto do Transact-SQL adaptado para realizar cálculos em dados de streaming. O mecanismo suporta funções de janela que são essenciais para processamento de fluxo e são implementadas usando SAQL.
+Event Consumer - Este é um destino para a saída do mecanismo de análise de fluxo. A saída pode ser armazenada em uma plataforma de armazenamento de dados, como Azure Data Lake Storage Gen2, Azure Cosmos DB, Banco de Dados SQL do Azure ou Armazenamento de Blobs do Azure. Ou você pode consumir a saída quase em tempo real usando os painéis do Power BI.
+
+Aspectos operacionais
+O Stream Analytics garante o processamento de eventos e pelo menos a entrega de um evento, para que os dados nunca sejam perdidos. Além disso, possui recursos de recuperação integrados, no caso de um erro ao entregar um evento. O Stream Analytics também fornece pontos de verificação integrados para manter o status do trabalho e produzir resultados repetíveis.
+
+Como o Azure Stream Analytics é um serviço PaaS, ele é totalmente gerenciado e altamente confiável. Sua integração integrada com várias fontes e destinos, juntamente com um modelo de programação flexível, melhora a produtividade do desenvolvedor. Além disso, como o mecanismo Stream Analytics permite o processamento na memória, ele oferece desempenho superior. Todos esses fatores contribuem para um baixo custo total de propriedade (TCO) do Azure Stream Analytics.
+
+Próxima Unidade: Teste de Conhecimento
+
+Resumo
+Preenchidas
+100 EXP
+5 minutos
+O Azure Stream Analytics é um serviço de PaaS que se integra a aplicativos e à Internet das Coisas (IoT) para obter insights com dados de streaming ou dados estáticos contidos em um armazenamento de blobs. O processo de consumir fluxos de dados, analisá-los e derivar informações acionáveis deles é chamado de processamento de eventos. Requer um produtor de eventos, um processador de eventos e um consumidor de eventos. O Azure Stream Analytics fornece processamento de eventos para seu fluxo, que é totalmente gerenciado e extremamente confiável.
+
+Neste módulo, você aprendeu como funciona a análise em tempo real de dados de fluxo, em princípio. Você também descobriu como pode usar o Azure Stream Analytics para integrar dados de streaming em seus fluxos de trabalho de análise em tempo real.
+
+Objetivos de aprendizado
+Neste módulo, você aprendeu a:
+
+Entenda os fluxos de dados
+Entenda o processamento de eventos
+Compreender as informações sobre o processamento de eventos com o Azure Stream Analytics
+
+
+Proteja sua conta de armazenamento do Azure
+5 minutos restantes
+Módulo
+7 de 8 unidades concluídas
+Principiante
+Administrador
+Engenheiro de dados
+Engenheiro de segurança
+Solução de arquitetura
+Azure
+Armazenar
+Saiba como o Armazenamento do Azure fornece segurança em várias camadas para proteger seus dados. Descubra como usar chaves de acesso, proteger redes e usar a Proteção Avançada contra Ameaças para monitorar seu sistema de forma proativa.
+
+Objetivos de aprendizado
+Neste módulo você irá:
+
+Explore os recursos de segurança de classe empresarial do Azure Data Lake.
+Entenda as chaves da conta de armazenamento.
+Entenda as assinaturas de acesso compartilhado.
+Entenda a criptografia em nível de transporte com HTTPS.
+Entenda a Proteção Avançada contra Ameaças.
+Controle o acesso à rede.
+
+Armazenar dados de aplicativos com o armazenamento de BLOBs do Azure
+50 minutos
+Módulo
+8 Unidades
+Principiante
+Desenvolvedor
+Azure
+Armazenar
+Crie um aplicativo que armazene arquivos de usuário com armazenamento de Blobs do Azure.
+
+Objetivos de aprendizado
+Neste módulo, você irá:
+
+Organize seus dados com o Armazenamento de Blobs do Azure
+Criar recursos de armazenamento para armazenar blobs
+Armazenar e recuperar dados do Armazenamento de Blobs do Azure
+
+Introdução ao armazenamento de blobs
+Concluído
+100 EXP
+3 minutos
+Os blobs oferecem armazenamento de objetos na nuvem e uma API que permite criar aplicativos para acessar os dados.
+
+Suponha que você trabalhe em uma empresa de jogos de realidade aumentada. Seu jogo é executado em todas as plataformas móveis. Você deseja adicionar um novo recurso para permitir que os usuários gravem videoclipes de seus jogos e carreguem os clipes em seus servidores. Os usuários poderão assistir a clipes diretamente no jogo ou através do seu site. Você planeja registrar cada upload e visualização para uso em análises e rastreabilidade.
+
+Você precisa de uma solução de armazenamento que possa lidar com milhares de uploads simultâneos, grandes quantidades de dados de vídeo e arquivos de log em constante crescimento. Você também precisa adicionar a funcionalidade de visualização a todos os seus aplicativos móveis e ao seu site, para que você deseje acesso à API de várias plataformas e idiomas.
+
+Aqui, você verá como o Armazenamento de Blobs do Azure pode ser apropriado para este aplicativo.
+
+Objetivos de aprendizado
+Neste módulo, você irá:
+
+Organize seus dados com o Armazenamento de Blobs do Azure
+Criar recursos de armazenamento para armazenar blobs
+Armazenar e recuperar dados do Armazenamento de Blobs do Azure
+
+O que são bolhas?
+Concluído
+100 EXP
+3 minutos
+Blobs são arquivos para a nuvem . Os aplicativos funcionam com blobs da mesma maneira que trabalham com arquivos em um disco; leitura e escrita de dados. No entanto, ao contrário de um arquivo local, você pode acessar blobs de qualquer lugar com uma conexão com a Internet.
+
+O Armazenamento de Blobs do Azure não é estruturado , o que significa que não há restrições sobre os tipos de dados que ele pode conter. Por exemplo, um blob pode conter um documento PDF, uma imagem JPG, um arquivo JSON, conteúdo de vídeo e muito mais. Os blobs não estão limitados a formatos de arquivo comuns; um blob pode conter gigabytes de dados binários transmitidos de um instrumento científico, uma mensagem criptografada para outro aplicativo ou dados em um formato personalizado para um aplicativo que você está desenvolvendo.
+
+Os blobs não são eficientes para dados estruturados que precisam ser consultados com frequência. Eles têm maior latência do que a memória e os discos locais e não têm os recursos de indexação que tornam os bancos de dados eficientes na execução de consultas. No entanto, os blobs são frequentemente usados em combinação com bancos de dados para armazenar dados não consultáveis. Por exemplo, um aplicativo com um banco de dados de perfis de usuário pode armazenar imagens de perfil em blobs. Cada registro de usuário no banco de dados inclui o nome ou URL do blob que contém a imagem do usuário.
+
+Os blobs são usados para armazenamento de dados de várias maneiras em todos os tipos de aplicativos e arquiteturas:
+
+Aplicativos que precisam transmitir grandes quantidades de dados usando um sistema de mensagens que suporta apenas mensagens pequenas. Esses aplicativos podem armazenar dados em blobs e enviar os URLs de blob em mensagens.
+O Blob Storage pode ser usado como um sistema de arquivos para armazenar e compartilhar documentos e outros dados pessoais.
+Ativos da Web estáticos, como imagens, podem ser armazenados em blobs e disponibilizados para download público como se fossem arquivos em um servidor da Web.
+Muitos componentes do Azure usam blobs nos bastidores. Por exemplo, o Azure Cloud Shell armazena seus arquivos e configuração em blobs e as Máquinas Virtuais do Azure usam blobs para armazenamento em disco rígido.
+Alguns aplicativos criam, atualizam e excluem constantemente blobs como parte de seu trabalho. Outros usarão um pequeno conjunto de blobs e raramente os alterarão.
+
+Contas de armazenamento, contêineres e metadados
+No Armazenamento de Blobs, cada blob vive dentro de um contêiner de blob . Você pode armazenar um número ilimitado de blobs em um contêiner e um número ilimitado de contêineres em uma conta de armazenamento. Os contêineres são "planos"; eles só podem armazenar blobs, não outros contêineres.
+
+Blobs e contêineres dão suporte a metadados na forma de pares de strings de nome-valor. Seus aplicativos podem usar metadados para o que você quiser: uma descrição legível por humanos do conteúdo de um blob a ser exibido pelo aplicativo, uma string que seu aplicativo usa para determinar como processar os dados do blob e assim por diante.
+
+ Dica
+
+O Armazenamento de Blobs não fornece nenhum mecanismo para pesquisar ou classificar blobs por metadados. Para obter informações sobre como usar a Pesquisa Cognitiva do Azure, consulte a seção Leitura adicional no final deste módulo.
+
+API de armazenamento de blobs e bibliotecas de cliente
+A API de armazenamento de blob é baseada em REST e suportada por bibliotecas de cliente em muitas linguagens populares. Ele permite escrever aplicativos que criam e excluem blobs e contêineres, carregam e baixam dados de blob e listam os blobs em um contêiner.
+
+Próxima unidade: Projetar uma estratégia de organização de armazenamento
+Continuar
+
+Projete uma estratégia de organização de armazenamento
+200 EXP
+7 minutos
+Ao projetar um aplicativo que precisa armazenar dados, é importante pensar em como o aplicativo organizará os dados entre contas de armazenamento, contêineres e blobs.
+
+Contas de armazenamento
+Uma única conta de armazenamento é flexível o suficiente para organizar seus blobs. No entanto, você deve usar contas de armazenamento adicionais conforme necessário para separar logicamente os custos e controlar o acesso aos dados.
+
+Recipientes e bolhas
+A natureza do seu aplicativo e os dados que ele armazena devem orientar sua estratégia para nomear e organizar contêineres e blobs.
+
+Os aplicativos que usam blobs como parte de um esquema de armazenamento que inclui um banco de dados geralmente não precisam depender muito de organização, nomenclatura ou metadados para indicar qualquer coisa sobre seus dados. Esses aplicativos geralmente usam identificadores como GUIDs como nomes de blob e fazem referência a esses identificadores em registros de banco de dados. O aplicativo usa o banco de dados para determinar onde os blobs são armazenados e o tipo de dados que eles contêm.
+
+Outros aplicativos podem usar o Armazenamento de Blobs do Azure mais como um sistema de arquivos pessoal, em que os nomes de contêiner e blob são usados para indicar significado e estrutura. Os nomes de blob nesses tipos de aplicativos geralmente se parecem com nomes de arquivos tradicionais e incluem extensões de nome de arquivo como .jpgpara indicar que tipo de dados eles contêm. Eles usarão diretórios virtuais (veja abaixo) para organizar blobs e usarão frequentemente tags de metadados para armazenar informações sobre blobs e contêineres.
+
+Há algumas coisas importantes a serem consideradas ao decidir como organizar e armazenar blobs e contêineres.
+
+Limitações de nomenclatura
+Os nomes de contêiner e blob devem estar em conformidade com um conjunto de regras, incluindo limitações de comprimento e restrições de caracteres. Para obter informações mais específicas sobre regras de nomenclatura, consulte a seção Leituras Adicionais no final deste módulo.
+
+Acesso público e contêineres como limites de segurança
+Por padrão, todos os blobs exigem autenticação para acessar. No entanto, você pode configurar contêineres individuais para permitir o download público de seus blobs sem autenticação. O download público oferece suporte a muitos casos de uso, como hospedagem de ativos de sites estáticos e compartilhamento de arquivos. Isso funciona porque o download do conteúdo do blob funciona da mesma maneira que a leitura de qualquer outro tipo de dados na web: basta apontar um navegador ou qualquer coisa que possa fazer uma solicitação GET na URL do blob.
+
+Habilitar o acesso público é importante para a escalabilidade porque os dados baixados diretamente do Armazenamento de Blobs não geram nenhum tráfego em seu aplicativo do lado do servidor. Mesmo que você não aproveite imediatamente o acesso público ou use um banco de dados para controlar o acesso a dados por meio de seu aplicativo, planeje usar contêineres separados para os dados que deseja disponibilizar publicamente.
+
+ Cuidado
+
+Qualquer pessoa que conheça seus URLs de armazenamento pode baixar blobs em um contêiner configurado para acesso público sem nenhum tipo de autenticação ou auditoria. Nunca coloque dados de blob em um contêiner público que você não pretenda compartilhar publicamente.
+
+Além do acesso público, o Azure tem um recurso de assinatura de acesso compartilhado que permite o controle de permissões refinado em contêineres. O controle de acesso de precisão permite cenários que melhoram ainda mais a escalabilidade, portanto, é útil pensar nos contêineres como limites de segurança em geral.
+
+Prefixos de nome de blob (diretórios virtuais)
+Tecnicamente, os contêineres são "planos" e não suportam nenhum tipo de aninhamento ou hierarquia. Mas se você der aos seus blobs nomes hierárquicos que se pareçam com caminhos de arquivo (como finance/budgets/2017/q1.xls), a operação de listagem da API pode filtrar os resultados para prefixos específicos. Isso permite que você navegue na lista como se fosse um sistema hierárquico de arquivos e pastas.
+
+Esse recurso costuma ser chamado de diretórios virtuais , porque algumas ferramentas e bibliotecas de cliente o usam para visualizar e navegar no Blob Storage como se fosse um sistema de arquivos. Cada navegação de pasta aciona uma chamada separada para listar os blobs nessa pasta.
+
+Usar nomes que são como nomes de arquivo para blobs é uma técnica comum para organizar e navegar em dados de blob complexos.
+
+Tipos de blob
+Existem três tipos diferentes de blobs nos quais você pode armazenar dados:
+
+Os blobs de blocos são compostos por blocos de tamanhos diferentes que podem ser carregados independentemente e em paralelo. A gravação em um blob de bloco envolve o upload de dados para blocos e o commit deles no blob.
+Os blobs de acréscimo são blobs de blocos especializados que dão suporte apenas à anexação de novos dados (não atualizando ou excluindo dados existentes), mas são muito eficientes nisso. Os blobs de acréscimo são ótimos para cenários como armazenamento de logs ou gravação de dados transmitidos.
+Os blobs de páginas são projetados para cenários que envolvem leituras e gravações de acesso aleatório. Os blobs de páginas são usados para armazenar os arquivos de disco rígido virtual (VHD) usados pelas Máquinas Virtuais do Azure, mas são ótimos para qualquer cenário que envolva acesso aleatório.
+Os blobs de blocos são a melhor escolha para a maioria dos cenários que não exigem especificamente blobs de acréscimo ou de página. Sua estrutura baseada em blocos suporta uploads e downloads muito rápidos e acesso eficiente a partes individuais de um blob. O processo de gerenciamento e confirmação de blocos é tratado automaticamente pela maioria das bibliotecas cliente, e algumas também lidam com uploads e downloads paralelos para maximizar o desempenho.
+
+Ingestão em escala de petabytes com Azure Data Factory ou Azure Synapse Pipeline
+43 minutos
+Módulo
+9 unidades
+
+ 4,6 ( 870 )
+
+Avalie
+Principiante
+Engenheiro de dados
+Cientista de dados
+Fábrica de dados
+Análise de sinapse
+Neste módulo, você aprenderá os vários métodos que podem ser usados para ingerir dados entre vários armazenamentos de dados usando o Azure Data Factory.
+
+Objetivos de aprendizado
+Introdução
+Listar os métodos de ingestão de data factory
+Descrever conectores de fábrica de dados
+Exercício: Use a atividade de cópia do data factory
+Exercício: Gerenciar o tempo de execução de integração auto-hospedado
+Exercício: configurar o tempo de execução de integração do Azure
+Entenda as considerações de segurança de ingestão de dados
+Verificação de conhecimento
+Resumo
+
+Introdução
+Concluído
+100 EXP
+2 minutos
+A primeira etapa do trabalho de integração de dados é ingerir dados de origem de qualquer número de sistemas em um destino ou um armazenamento de dados intermediário. O Azure Data Factory fornece diferentes métodos de ingestão que podem se conectar a quase uma centena de conectores de dados diferentes. O método escolhido dependerá em grande parte do seu conjunto de habilidades atual ou preferência por trabalhar com uma tecnologia para ingerir dados.
+
+Independentemente do método escolhido, você deve configurar a infraestrutura apropriada para dar suporte ao método de ingestão de dados por meio de tempos de execução de integração. Além disso, você também deve garantir que a ingestão de dados seja segura em cada armazenamento de dados e enquanto estiver em trânsito
+
+Objetivos de aprendizado
+Neste módulo, você irá:
+
+Descrever os métodos de ingestão de dados
+Entenda os conectores disponíveis
+Use a atividade de cópia
+Gerenciar um tempo de execução de integração auto-hospedado
+Configurar o tempo de execução de integração do Azure
+Descrever as considerações de segurança de ingestão de dados
+Próxima unidade: listar os métodos de ingestão de data factory
+
+Listar os métodos de ingestão de data factory
+Concluído
+100 EXP
+4 minutos
+O Azure Data Factory pode acomodar organizações que estão embarcando em projetos de integração de dados a partir de diferentes pontos de partida. É raro que um projeto de migração de dados seja um projeto de campo verde. Normalmente, muitos fluxos de trabalho de integração de dados devem considerar pipelines existentes que foram criados em projetos anteriores, com diferentes dependências e usando diferentes tecnologias. Para esse fim, existem vários métodos de ingestão que podem ser usados para extrair dados de uma variedade de fontes.
+
+Ingerindo dados usando a atividade de cópia
+Use esse método para criar pipelines de ingestão de dados sem código que não exigem nenhuma transformação durante a extração dos dados. A atividade de cópia tem suporte para mais de 100 conectores nativos. Esse método pode atender a projetos de campo verde que possuem um método simples de extração para um armazenamento de dados intermediário. Um exemplo de ingestão de dados usando a atividade de cópia pode incluir a extração de dados de vários sistemas de banco de dados de origem e a saída dos dados para arquivos em um armazenamento de data lake. O benefício desse método de ingestão é que eles são simples de criar, mas não são capazes de lidar com transformações sofisticadas ou lógica de negócios.
+
+Como ingerir dados usando recursos de computação
+O Azure Data Factory pode chamar recursos de computação para processar dados por um serviço de plataforma de dados que pode ser mais adequado para o trabalho. Um ótimo exemplo disso é que o Azure Data Factory pode criar um pipeline para uma plataforma de dados analíticos, como pools do Spark em uma instância do Azure Synapse Analytics para realizar um cálculo complexo, que gera novos dados. Esses dados são então ingeridos de volta no pipeline para processamento posterior. Há uma ampla gama de recursos de computação e as atividades associadas que eles podem executar, conforme mostrado na tabela a seguir:
+
+Ambiente de computação	Atividades
+Cluster HDInsight sob demanda ou seu próprio cluster HDInsight	Hive, Pig, Spark, MapReduce, Hadoop Streaming
+Lote do Azure	Atividades personalizadas
+Máquina do Azure Machine Learning Studio	Atividades de aprendizagem: Execução em lote e recurso de atualização
+Aprendizado de máquina do Azure	Pipeline de Execução do Azure Machine Learning
+Azure Data Lake Analytics	Data Lake Analytics U-SQL
+Azure SQL, Azure SQL Data Warehouse, SQL Server	Procedimento armazenado
+Azure Databricks	Notebook, Jar, Python
+Função do Azure	Atividade do Azure Function
+Ingerir dados usando pacotes SSIS
+Muitas organizações têm décadas de investimento em desenvolvimento em pacotes SQL Server Integration Services (SSIS) que contêm lógica de ingestão e transformação de armazenamentos de dados locais e na nuvem. O Azure Data Factory fornece a capacidade de elevar e deslocar a carga de trabalho SSIS existente, criando um Azure-SSIS Integration Runtime para executar pacotes SSIS nativamente e permitirá que você implante e gerencie seus pacotes SSIS existentes com pouca ou nenhuma alteração usando ferramentas familiares, como SQL Server Data Tools (SSDT) e SQL Server Management Studio (SSMS), assim como usar o SSIS no local.
+
+Próxima unidade: Descrever os conectores da fábrica de dados
+
+Descrever conectores de fábrica de dados
+Concluído
+100 EXP
+3 minutos
+Conectores são objetos do Azure Data Factory que permitem que seus serviços vinculados e conjuntos de dados se conectem a uma ampla variedade de fontes de dados e coletores. Isso pode incluir conexões com recursos do Azure e conectores de terceiros, como Amazon S3 ou nuvem do Google. Há quase 100 conectores disponíveis e eles funcionam com as atividades Copiar, Fluxo de Dados, Pesquisar, Obter Metadados e Excluir que podem ser encontradas no Azure Data Factory.
+
+Os formatos de arquivo suportados incluem:
+
+Formato Avro
+Formato binário
+Formato de texto delimitado
+Formato JSON
+Formato ORC
+Formato parquet
+Há muitos armazenamentos de dados para listar, mas a tabela a seguir lista as categorias de armazenamentos de dados e dois exemplos dos tipos de conectores existentes
+
+Categoria	Exemplo de armazenamento de dados
+Azure	Azure Data Lake Store, Azure Synapse Analytics
+Bancos de dados	Netezza, Greenplum
+Armazenamentos NoSQL	Cassandra, MongoDB
+Arquivo	FTP, armazenamento em nuvem do Google
+Protocolos genéricos	REST, ODBC
+Serviços e aplicativos	Dinâmica, Força de Vendas
+A lista de conectores está em constante evolução. Você pode manter-se atualizado com a lista mais recente e o suporte à atividade consultando a página de visão geral dos conectores
+
+Próxima unidade: Exercício - Use a atividade de cópia do data factory
+
+Formatos de arquivo suportados
+Os seguintes formatos de arquivo são suportados. Consulte cada artigo para configurações baseadas em formato.
+
+Formato Avro
+Formato binário
+Formato de modelo de dados comum
+Formato de texto delimitado
+Formato delta
+Formato Excel
+Formato JSON
+Formato ORC
+Formato parquet
+Formato XML
+
+Exercício - Gerenciar o tempo de execução de integração auto-hospedado
+Concluído
+100 EXP
+5 minutos
+No Data Factory, uma atividade define a ação a ser executada. Um serviço vinculado define um armazenamento de dados de destino ou um serviço de computação. Um tempo de execução de integração fornece a ponte entre a atividade e os serviços vinculados.
+
+Tempo de execução de integração auto-hospedado
+Um tempo de execução de integração auto-hospedado é capaz de:
+
+Executando a atividade de cópia entre um armazenamento de dados na nuvem e um armazenamento de dados na rede privada.
+Despachando as seguintes atividades de transformação em recursos de computação no local ou na Rede Virtual do Azure:
+Atividade HDInsight Hive (BYOC-Traga seu próprio cluster)
+Atividade HDInsight Pig (BYOC)
+Atividade HDInsight MapReduce (BYOC)
+Atividade do HDInsight Spark (BYOC)
+Atividade de streaming HDInsight (BYOC)
+Atividade de execução em lote de aprendizado de máquina
+Atividades de recursos de atualização de aprendizado de máquina
+Atividade de procedimento armazenado
+Atividade U-SQL do Data Lake AnalyticsNo Data Factory, uma atividade define a ação a ser executada. Um serviço vinculado define um armazenamento de dados de destino ou um serviço de computação. Um tempo de execução de integração fornece a ponte entre a atividade e os serviços vinculados.
+
+Tempo de execução de integração do Azure
+Um tempo de execução de integração do Azure é capaz de:
+
+Executando fluxos de dados no Azure
+Executando a atividade de cópia entre armazenamentos de dados na nuvem
+Despachando as seguintes atividades de transformação na rede pública : atividade Databricks Notebook/Jar/Python, atividade HDInsight Hive, atividade HDInsight Pig, atividade HDInsight MapReduce, atividade HDInsight Spark, atividade HDInsight Streaming, atividade Machine Learning Batch Execution, Machine Learning Update Resource Activities, Stored Atividade de procedimento, atividade U-SQL do Data Lake Analytics, atividade personalizada do .NET, atividade da Web, atividade de pesquisa e atividade de obtenção de metadados.
+Você pode definir um determinado local de um Azure IR, caso em que a movimentação de dados ou o envio de atividade acontecerá nessa região específica. Se você optar por usar o IR do Azure de resolução automática, que é o padrão, o ADF fará o possível para detectar automaticamente seu coletor e armazenamento de dados de origem para escolher o melhor local na mesma região, se disponível, ou o mais próximo na mesma geografia para a atividade de cópia. Para qualquer outra coisa, ele usará o IR na região do Data Factory. O Azure Integration Runtime também tem suporte para redes virtuais.
+Atividade personalizada (executada no Lote do Azure)
+Atividade de pesquisa
+Obter atividade de metadados.
+O tempo de execução de integração auto-hospedado é registrado logicamente no Azure Data Factory e o recurso de computação usado para dar suporte à sua função conforme fornecido por você. Portanto, não há propriedade de localização explícita para IR auto-hospedado. Quando usado para realizar a movimentação de dados, o IR auto-hospedado extrai dados da origem e os grava no destino.
+
+Criar um Integration Runtime auto-hospedado no Azure Data Factory
+Na página Vamos começar da interface do usuário do Azure Data Factory, selecione Gerenciar no painel mais à esquerda e selecione Tempos de execução de integração. Selecione +Novo.
+
+Próxima unidade: Exercício - Configurar o tempo de execução de integração do Azure
+
+
+Entenda as considerações de segurança de ingestão de dados
+Concluído
+100 EXP
+8 minutos
+A integração de dados requer o manuseio seguro de dados em repouso e em trânsito. Antes da criação de uma solução de integração de dados, a fase de projeto deve considerar os requisitos de segurança. Isso fornecerá inicialmente cobertura dos sistemas de origem e como os dados deles são ingeridos. No entanto, há uma necessidade de uma abordagem holística, que também encapsule a segurança de armazenamentos de dados intermediários nas seguintes áreas
+
+Rede
+Há uma série de questões que você deve estar ciente sobre como configurar a segurança da rede. Você pode ter que trabalhar com o Administrador do Azure em sua organização para gerenciar algumas dessas áreas.
+
+Use redes virtuais para proteger recursos do Azure
+As redes virtuais permitem a comunicação segura entre os serviços do Azure ou com servidores que existem na rede local. Redes virtuais ou VNets são o bloco de construção fundamental para configurar redes privadas. Ele permite a comunicação segura entre recursos do Azure, serviços na Internet e com servidor em redes locais. O Azure Data Factory pode ingerir dados de um servidor local ou de uma máquina virtual hospedada no Azure. Para conseguir isso, um tempo de execução de integração auto-hospedado pode ser implantado em um servidor dentro de uma rede virtual. Para restringir o acesso, você deve configurar um Network Security Group (NSG) para permitir apenas acesso administrativo. Ao usar o tempo de execução de integração Azure-SSIS, você tem a opção de ingressar em uma rede virtual. Aceitar essa opção permite que o Azure Data Factory crie recursos de rede, um exemplo disso é que um Grupo de Segurança de Rede é criado automaticamente pelo Azure Data Factory e a porta 3389 está aberta a todo o tráfego por padrão. Bloqueie isso para garantir que apenas seus administradores tenham acesso.
+
+Use serviços para detectar e evitar intrusões
+Você pode negar a comunicação com endereços IP conhecidos habilitando o padrão de proteção de negação de serviço distribuído (DDoS) nas redes virtuais nas quais o tempo de execução de integração está hospedado. Além disso, você pode usar o Integrated Threat Intelligence da Central de Segurança do Azure para negar comunicações com endereços IP de Internet mal-intencionados ou não utilizados conhecidos. O Firewall do Azure com Threat Intelligence pode ser usado para controlar o acesso à rede. Se a detecção e/ou prevenção de intrusão com base na inspeção de carga útil for necessária, você poderá redirecionar o tráfego para um dispositivo de firewall por meio do túnel de força do Azure ExpressRoute ou para um Dispositivo Virtual de Rede que dê suporte a esse recurso
+
+Simplifique o gerenciamento de regras de segurança usando tags de serviço de rede
+As redes virtuais podem ser configuradas com etiquetas de serviço. As marcas de serviço permitem agrupar prefixos de endereço IP de um determinado serviço do Azure para fins administrativos. Usando as marcas de serviço, você pode criar regras de segurança de rede em grupos de segurança de rede com base nas marcas de serviço para reduzir as sobrecargas administrativas. Ao especificar o nome da etiqueta de serviço (por exemplo, DataFactoryManagement) no campo de origem ou destino apropriado de uma regra, você pode permitir ou negar tráfego de entrada para o serviço correspondente.
+
+Identidade e controle de acesso
+Gerenciar o acesso aos seus dados é uma área importante a ser considerada. Aqui estão algumas áreas para estar ciente.
+
+Contas administrativas
+As contas administrativas usadas para trabalhar e gerenciar o Azure Data Factory devem ser dedicadas, contas conhecidas que são monitoradas e gerenciadas regularmente para garantir que não sejam comprometidas. Para criar instâncias do Data Factory, a conta de usuário que você usa para entrar no Azure deve ser um membro da função de colaborador ou proprietário ou um administrador da assinatura do Azure. Para ambientes de alta segurança, considere o uso de máquinas dedicadas para acesso administrativo para quaisquer tarefas administrativas do ADF
+
+Use o Active Directory para usar o logon único
+Registre os principais de serviço no Azure Active Directory para aproveitar o gerenciamento de token para que seu serviço Azure Data Factory simplifique sua autenticação nos recursos do Azure. Um data factory pode ser associado a uma identidade gerenciada para recursos do Azure que representa o data factory específico. Você pode usar essa identidade gerenciada para autenticação do Banco de Dados SQL do Azure. A fábrica designada pode acessar e copiar dados de ou para seu banco de dados usando essa identidade.
+
+Proteção de dados
+Você pode ter que fazer considerações especiais para tipos específicos de dados, como dados médicos ou dados financeiros nas seguintes áreas.
+
+Use o controle de acesso baseado em função (RBAC) para controlar o acesso aos recursos
+Use o RBAC nas fontes de dados para controlar o acesso aos dados à entidade de serviço do Azure Data Factory.
+
+Dados sensíveis
+Há uma série de considerações que você deve levar em conta ao trabalhar com dados confidenciais, incluindo:
+
+Manter uma lista dos armazenamentos de dados que contêm informações confidenciais
+Isole os sistemas que armazenam ou processam informações confidenciais
+Monitore e bloqueie a transferência não autorizada de informações confidenciais
+Criptografe todas as informações confidenciais que estiverem em trânsito
+Criptografe todas as informações confidenciais em repouso
+Registro e monitoramento
+Também é importante entender quem está acessando seus dados, e suas considerações de segurança devem envolver as seguintes áreas.
+
+Configurar o gerenciamento de log de segurança central
+Use o Azure Monitor para centralizar o armazenamento de logs de ingestão gerados pelo Azure Data Factory e consulte-os usando o Log Analytics. Além disso, configure uma estratégia para armazenar os logs a longo prazo nas contas de armazenamento do Azure para que você tenha os dados para estabelecer linhas de base para atividades de ingestão do ADF
+
+Monitore e registre a configuração e o tráfego de pacotes de rede de redes virtuais, sub-redes e NICs
+Habilite logs de fluxo de grupo de segurança de rede (NSG) para o NSG protegendo sua implantação do Integration Runtime e envie logs para uma conta de armazenamento do Azure para auditoria de tráfego. Você também pode enviar logs de fluxo NSG para um espaço de trabalho do Log Analytics e usar o Traffic Analytics para fornecer informações sobre o fluxo de tráfego em sua nuvem do Azure.
+
+Ativar registro de auditoria
+Você pode usar as configurações de diagnóstico do Azure Data Factory para configurar logs de diagnóstico para rastrear dados de execução de pipeline, que são retidos por 45 dias. Você pode salvar os logs de diagnóstico em contas de armazenamento do Azure para análise futura.
+
+Ativar alertas sobre atividades
+A configuração de diagnóstico para Azure Data Factory que envia logs para Log Analytics pode ter alertas configurados para um conjunto de condições pré-definidas que podem alertar um administrador sobre atividades
+
+Siga o padrão de registro e monitoramento padrão em sua organização
+Verifique os padrões de sua organização para registro e monitoramento e ajuste ao padrão, incluindo:
+
+Registro de auditoria
+Registros de segurança
+Registro antimalware
+Políticas de retenção de registros
+
+Resumo
+Concluído
+100 EXP
+3 minutos
+A ingestão de dados pode operar em escala de petabytes usando um método de ingestão adequado ao seu conjunto de habilidades. O uso do método Copy Activity fornece o método mais simples para configurar seu mecanismo de ingestão. Independentemente do método usado, você deve estar ciente de que, para transferências de dados de servidores locais, é necessário um tempo de execução de integração auto-hospedado para permitir isso. Para execução do pacote SSIS, o tempo de execução de integração Azure-SSIS é mais apropriado. Também é importante garantir que os dados sejam ingeridos com segurança.
+
+ Importante
+
+Se você estiver trabalhando em sua própria assinatura enquanto executa esse conteúdo, é uma prática recomendada no final de um projeto identificar se ainda precisa ou não dos recursos que criou. Os recursos deixados em execução podem custar-lhe dinheiro. Você pode excluir recursos um por um ou apenas excluir o grupo de recursos para se livrar de todo o conjunto.
 
 
 
